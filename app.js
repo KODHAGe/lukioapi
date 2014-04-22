@@ -39,10 +39,10 @@ server.post({path : PATH , version: '0.0.1'} ,postNewSchool);
 
 // Hakufunktiot
 
-// Haetaan koulujen top30
+// Haetaan kaikki lukiot
 function findAllSchools(req, res , next){
     res.setHeader('Access-Control-Allow-Origin','*');
-    schools.find().sort({rank: -1}).limit(30 , function(err , success){
+    schools.find().sort({rank: -1}, function(err , success){
         console.log('Response success '+success);
         console.log('Response error '+err);
         if(success){

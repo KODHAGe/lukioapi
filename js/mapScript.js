@@ -32,7 +32,7 @@ var alLong = 25.742411;
 
 
 // Luodaan kartta #map-diviin ja asetetaan alkulat -long ja -zoom
-var map = L.map('map').setView([
+var map = L.map('map').setView([    
 alLat,alLong], alZoom);
 
 // Lisätään MapQuest karttakerros; footeriin attriuutio käyttöehtojen mukaisesti
@@ -41,7 +41,7 @@ alLat,alLong], alZoom);
           }).addTo(map);
 
 // Luodaan AwesomeMarkers-pluginilla ikoneja aseteltavaksi kartalle (tähän jotain hienompaa?)
-/*var redMarker = L.AwesomeMarkers.icon({
+var redMarker = L.AwesomeMarkers.icon({
   icon: 'empty', 
   color: 'red'
 })
@@ -61,7 +61,7 @@ var darkgreenMarker = L.AwesomeMarkers.icon({
   color: 'darkgreen'
 })
 
-var cadetblueMarker = L.AwesomeMarkers.icon({
+/*var cadetblueMarker = L.AwesomeMarkers.icon({
   icon: 'empty', 
   color: 'cadetblue'
 })
@@ -75,6 +75,38 @@ var darkblueMarker = L.AwesomeMarkers.icon({
   icon: 'empty', 
   color: 'darkblue'
 })*/
+
+$.getJSON( "http://localhost:6565/lukio", function( data ) {
+    $.each(data, function( i, item) {
+        console.log(item.result);
+	var val = parseFloat(item.result);
+    var markerType;
+        
+    if (val >= 0.2) {
+    console.log("green")
+	markerType = greenMarker;
+	} else if (val >= -0.2 && val <= 0.2) {
+    console.log("orange")
+	markerType = orangeMarker;
+	} else if (val < -0.2) {
+    console.log("red")
+	markerType = redMarker;
+	}
+	
+	/*
+	if (val >= 0.2) {
+	markerType = blueMarker;
+	} else if (val >= -0.2 && val <= 0.2) {
+	markerType = darkblueMarker;
+	} else if (val < -0.2) {
+	markerType = cadetblueMarker;
+	}
+    */
+    console.log(redMarker);
+
+    L.marker([item.lat,item.lon],{icon:markerType}).addTo(map).bindPopup("<h2>"+item.schoolName+"<h2>");
+    });
+});
 
 // Poimitaan erillisessä .js:ssä tallennettu lukiodata ja piirretään markerit kartalle sen mukaisesti
 // Parhaat lukiot (muutos > 0.5) saavat kirkkaan vihreän, puolenvälin ylittävät (muutos > 0) tumman vihreän, puolenvälin alittavat (muutos < 0) oranssin ja huonoiten pärjänneet (muutos < -0.5) punaisen merkin.
